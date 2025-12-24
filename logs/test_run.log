@@ -1,0 +1,45 @@
+2025-12-24T15:23:21.792034: OS: Windows, Docker: False
+2025-12-24T15:23:21.800864: Testing input_backup.py
+2025-12-24T15:23:23.819139: SQLi vulnerability detected
+2025-12-24T15:23:23.834008: Command injection vulnerability detected
+2025-12-24T15:23:25.990267: TEST FAILED
+2025-12-24T15:24:50.769414: OS: Windows, Docker: False
+2025-12-24T15:24:50.774431: Testing input_backup.py
+2025-12-24T15:24:52.787681: SQLi vulnerability detected
+2025-12-24T15:24:52.802432: Command injection vulnerability detected
+2025-12-24T15:24:52.811985: Path traversal vulnerability detected
+2025-12-24T15:24:54.886056: SSRF vulnerability detected
+2025-12-24T15:24:54.890046: TEST FAILED
+2025-12-24T15:24:54.891058: Testing input.py
+2025-12-24T15:24:56.908219: SQLi vulnerability detected
+2025-12-24T15:24:56.926809: Command injection vulnerability detected
+2025-12-24T15:24:56.933849: Path traversal vulnerability detected
+2025-12-24T15:24:59.001332: SSRF vulnerability detected
+2025-12-24T15:24:59.003309: TEST FAILED
+2025-12-24T15:27:25.471281: OS: Windows, Docker: False
+2025-12-24T15:27:25.476391: Testing input_backup.py
+2025-12-24T15:27:27.494065: SQLi vulnerability detected
+2025-12-24T15:27:27.511457: Command injection vulnerability detected
+2025-12-24T15:27:27.518964: Path traversal vulnerability detected
+2025-12-24T15:27:29.592285: SSRF vulnerability detected
+2025-12-24T15:27:29.594242: TEST FAILED
+2025-12-24T15:27:29.594242: Testing input.py
+2025-12-24T15:27:31.603374: SQLi vulnerability detected
+2025-12-24T15:27:31.610717: Command injection vulnerability detected
+2025-12-24T15:27:31.614718: Path traversal vulnerability detected
+2025-12-24T15:27:31.621740: SSRF vulnerability detected
+2025-12-24T15:27:31.623763: TEST FAILED
+2025-12-24T15:29:22.987856: OS: Windows, Docker: False
+2025-12-24T15:29:22.993966: Testing input_backup.py
+2025-12-24T15:29:23.428066: SQLi vulnerability detected
+2025-12-24T15:29:23.435050: Command injection vulnerability detected
+2025-12-24T15:29:25.491698: TEST FAILED
+2025-12-24T15:29:25.492700: Testing input.py
+2025-12-24T15:29:25.499984: TEST PASSED
+2025-12-24T15:30:24.770898: OS: Windows, Docker: False
+2025-12-24T15:30:24.776913: Testing input_backup.py
+2025-12-24T15:30:25.214376: SQLi vulnerability detected
+2025-12-24T15:30:25.222520: Command injection vulnerability detected
+2025-12-24T15:30:27.275152: TEST FAILED
+2025-12-24T15:30:27.277210: Testing input.py
+2025-12-24T15:30:27.291984: TEST PASSED

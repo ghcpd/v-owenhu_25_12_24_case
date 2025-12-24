@@ -1,0 +1,101 @@
+{
+ "summary": {
+   "total_vulnerabilities": 8,
+   "critical": 2,
+   "high": 4,
+   "medium": 2,
+   "low": 0
+ },
+ "details": [
+   {
+     "id": 1,
+     "file": "input.py",
+     "line_numbers": [22],
+     "original": "q = \"SELECT id,name,balance FROM profiles WHERE id = '%s'\" % uid",
+     "updated": "c.execute(\"SELECT id,name,balance FROM profiles WHERE id = ?\", (uid,))",
+     "fix_explanation": "Replaced string formatting with parameterized query to prevent SQL injection."
+   },
+   {
+     "id": 2,
+     "file": "input.py",
+     "line_numbers": [10, 11, 12],
+     "original": "PAYMENT_TOKEN = \"tok_production_998877\"\nMAIL_SERVER_KEY = \"mail_srv_key_ABCDEFG\"\nINTERNAL_AUTH = \"admin_internal_5566\"",
+     "updated": "PAYMENT_TOKEN = os.environ.get(\"PAYMENT_TOKEN\", \"\")\nMAIL_SERVER_KEY = os.environ.get(\"MAIL_SERVER_KEY\", \"\")\nINTERNAL_AUTH = os.environ.get(\"INTERNAL_AUTH\", \"\")",
+     "fix_explanation": "Moved hardcoded secrets to environment variables to avoid exposure."
+   },
+   {
+     "id": 3,
+     "file": "input.py",
+     "line_numbers": [16],
+     "original": "hashed = hashlib.md5(raw.encode()).hexdigest()",
+     "updated": "hashed = hashlib.sha256(raw.encode()).hexdigest()",
+     "fix_explanation": "Upgraded from weak MD5 to SHA-256 for better security."
+   },
+   {
+     "id": 4,
+     "file": "input.py",
+     "line_numbers": [40],
+     "original": "subprocess.Popen(cmd, shell=True)",
+     "updated": "subprocess.Popen(['zip', f\"{name}.zip\", DB_FILE])",
+     "fix_explanation": "Removed shell=True and used list arguments to prevent command injection."
+   },
+   {
+     "id": 5,
+     "file": "input.py",
+     "line_numbers": [29],
+     "original": "print(log)",
+     "updated": "# Logging removed",
+     "fix_explanation": "Removed logging of sensitive transfer data."
+   },
+   {
+     "id": 6,
+     "file": "input.py",
+     "line_numbers": [25-32],
+     "original": "url = payload.get(\"notify_url\")\nresp = requests.post(url, json={\"token\": PAYMENT_TOKEN, \"amount\": amount})",
+     "updated": "if not ALLOWED_URL_PATTERN.match(url):\n    raise ValueError(\"Invalid URL\")\nparsed = urlparse(url)\nif parsed.hostname in ['localhost', '127.0.0.1', '0.0.0.0']:\n    raise ValueError(\"Forbidden URL\")\nresp = requests.post(url, json={\"token\": PAYMENT_TOKEN, \"amount\": amount}, timeout=10)",
+     "fix_explanation": "Added URL validation and SSRF protection."
+   },
+   {
+     "id": 7,
+     "file": "input.py",
+     "line_numbers": [35],
+     "original": "with open(path) as f:",
+     "updated": "if not path or '..' in path or not path.endswith('.yaml'):\n    raise ValueError(\"Invalid file path\")\nwith open(path) as f:",
+     "fix_explanation": "Added path validation to prevent directory traversal."
+   },
+   {
+     "id": 8,
+     "file": "input.py",
+     "line_numbers": [67],
+     "original": "app.run(debug=True)",
+     "updated": "app.run(debug=False, host='0.0.0.0', port=5000)",
+     "fix_explanation": "Disabled debug mode for production safety."
+   }
+ ],
+ "secrets": [
+   {
+     "id": 1,
+     "file": "input.py",
+     "line_numbers": [10],
+     "original": "tok_****8877",
+     "updated": "os.environ.get(\"PAYMENT_TOKEN\", \"\")",
+     "fix_explanation": "Hardcoded payment token moved to environment variable."
+   },
+   {
+     "id": 2,
+     "file": "input.py",
+     "line_numbers": [11],
+     "original": "mail****DEFG",
+     "updated": "os.environ.get(\"MAIL_SERVER_KEY\", \"\")",
+     "fix_explanation": "Hardcoded mail server key moved to environment variable."
+   },
+   {
+     "id": 3,
+     "file": "input.py",
+     "line_numbers": [12],
+     "original": "admi****5566",
+     "updated": "os.environ.get(\"INTERNAL_AUTH\", \"\")",
+     "fix_explanation": "Hardcoded internal auth moved to environment variable."
+   }
+ ]
+}
