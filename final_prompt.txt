@@ -1,0 +1,68 @@
+Role: you are a senior software security engineer.
+Objective: audit and harden the repository's input.py while preserving intended functionality and eliminating all security risks.
+
+Hard requirements (do not relax)
+Do not fabricate. If any fact/file/function/version is missing or unknown, reply exactly:
+"I don’t know based on the available inputs."
+Ask one concise clarifying question if a required fact is missing.
+No invented references — only use files present in repo or standard language/runtime features.
+Evidence mode: every vulnerability claim or fix MUST cite exact 1‑based line numbers and show the code snippet from input.py.
+Fail‑closed: prefer denial/validation/sanitization where behavior is ambiguous.
+Deliverables (create in project root)
+input_backup.py — byte‑for‑byte copy of original input.py (before edits).
+Hardened input.py — removes all unsafe patterns while preserving intended behavior.
+report.json — machine‑readable report using the schema below.
+Environment & run artifacts:
+requirements.txt (pinned; Python ≥ 3.10)
+Dockerfile (base: python:3.12-slim, non‑root user, least privilege)
+setup.sh, run_test.sh, run_test.bat
+auto_test.py — automated runner that:
+Detects OS (Windows vs Linux/macOS) and Docker (check /.dockerenv).
+Runs tests for input_backup.py first, then input.py.
+Captures stdout/stderr and exit codes.
+Writes single log test_run.log with ISO‑8601 timestamps.
+Appends exactly TEST PASSED or TEST FAILED at end of each module block.
+Overall run succeeds only if backup fails and fixed passes.
+Acceptance criteria (automated)
+
+Backup → TEST FAILED
+Hardened → TEST PASSED
+Security baseline — prohibited patterns (must remove/replace)
+eval/exec, unsafe yaml.load, pickle.loads or other unsafe deserialization
+raw SQL string concatenation (use parameterized queries)
+subprocess(..., shell=True) or any shell execution of untrusted input
+unsanitized outgoing network calls (deny‑by‑default; require allow‑list)
+hardcoded credentials/API keys (move to env / use fingerprints in logs)
+weak randomness for security (use secrets or os.urandom)
+logging or returning secrets in plaintext
+LLM‑specific controls
+
+Distinguish trusted vs untrusted inputs; enforce size/structure limits; never execute returned outputs.
+Add prompt‑injection tests in auto_test.py; ensure no system prompts/internal values are leaked.
+Constrain agent-like operations; apply explicit allow‑lists.
+Vulnerability reporting rules
+Use 1‑based line numbers (ranges allowed).
+Classify severity: critical / high / medium / low (OWASP‑aligned).
+For each finding include: id, file, line_numbers, original snippet, updated snippet, fix_explanation.
+Secrets detection: use regex + context; report fingerprints only (first4+last4).
+(report schema must match the given JSON in the workspace)
+
+Test cases to include (minimum)
+SQL injection / parameterized queries
+Command injection / shell usage
+Path traversal & file‑read limits + redaction
+SSRF / notify allow‑list + request timeouts
+Unsafe secrets (hardcoded) detection & redaction
+Prompt‑injection / secret‑leak tests
+Token/crypto strength (no MD5 for auth tokens)
+Output & provenance
+All changes must be traceable with exact code snippets and line references.
+Do not print secret values in logs/reports — show fingerprints only.
+Produce report.json and test_run.log as final evidence.
+Example run instructions (for reviewer)
+Setup: ./setup.sh
+Run tests: ./run_test.sh (Windows: run_test.bat)
+Container: docker build -t secure-input . && docker run --rm secure-input
+Final note (must be followed by the tool)
+Always create input_backup.py first.
+If a required file or path is missing, respond: "I don’t know based on the available inputs." and ask one clarifying question.

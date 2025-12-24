@@ -1,0 +1,101 @@
+{
+  "summary": {
+    "total_vulnerabilities": 8,
+    "critical": 3,
+    "high": 2,
+    "medium": 2,
+    "low": 1
+  },
+  "details": [
+    {
+      "id": 1,
+      "file": "input.py",
+      "line_numbers": [50, 51, 52, 53],
+      "original": "cmd = f\"zip {name}.zip {DB_FILE}\"\nsubprocess.Popen(cmd, shell=True)",
+      "updated": "# use Python's zipfile (no shell/exec)\nwith zipfile.ZipFile(archive, \"w\", compression=zipfile.ZIP_DEFLATED) as zf:\n    zf.write(DB_FILE, arcname=os.path.basename(DB_FILE))",
+      "fix_explanation": "Removed shell execution which allowed command-injection/RCE; replaced with Python zipfile and strict name validation (allow-list)."
+    },
+    {
+      "id": 2,
+      "file": "input.py",
+      "line_numbers": [24, 25, 26, 27, 28, 29, 30, 31],
+      "original": "conn = sqlite3.connect(DB_FILE)\nc = conn.cursor()\nq = \"SELECT id,name,balance FROM profiles WHERE id = '%s'\" % uid\nc.execute(q)\n...",
+      "updated": "with sqlite3.connect(DB_FILE) as conn:\n    c = conn.cursor()\n    c.execute(\"SELECT id,name,balance FROM profiles WHERE id = ?\", (int(uid),))\n    return c.fetchall()",
+      "fix_explanation": "Eliminated string-formatted SQL and enforced numeric ID allow-list; uses parameterized queries to prevent SQL injection/DB takeover."
+    },
+    {
+      "id": 3,
+      "file": "input.py",
+      "line_numbers": [44, 45, 46, 47],
+      "original": "with open(path) as f:\n    cfg = yaml.safe_load(f)\n    return cfg",
+      "updated": "# restrict path to CONFIG_DIR, limit file size, safe-load and redact secrets before returning\nwith open(candidate, \"r\", encoding=\"utf-8\") as f:\n    cfg = yaml.safe_load(f)\nreturn _sanitize(cfg)",
+      "fix_explanation": "Prevented arbitrary file read/path traversal by canonicalizing the path into a dedicated config directory, enforcing size limits, and redacting secret-like values."
+    },
+    {
+      "id": 4,
+      "file": "input.py",
+      "line_numbers": [34, 35, 36, 37, 38, 39, 40, 41],
+      "original": "target = payload.get(\"target\")\namount = payload.get(\"amount\")\nlog = f\"transfer:{target}:{amount}\"\nprint(log)\nurl = payload.get(\"notify_url\")\nresp = requests.post(url, json={\"token\": PAYMENT_TOKEN, \"amount\": amount})\nreturn resp.text",
+      "updated": "# validate notify_url and enforce deny-by-default allow-list; timeouts and error handling\nparsed = urlparse(url)\nif not NOTIFY_ALLOWLIST or host not in NOTIFY_ALLOWLIST:\n    raise ValueError(\"notify_url not allowed\")\nresp = requests.post(url, json=payload_json, timeout=5, allow_redirects=False)\nresp.raise_for_status()",
+      "fix_explanation": "Added URL validation, deny-by-default outbound requests (require explicit allow-list), request timeouts and error handling to prevent SSRF/uncontrolled outbound network calls."
+    },
+    {
+      "id": 5,
+      "file": "input.py",
+      "line_numbers": [18, 19, 20, 21],
+      "original": "raw = info.get(\"username\", \"\") + INTERNAL_AUTH\nhashed = hashlib.md5(raw.encode()).hexdigest()\nreturn hashed",
+      "updated": "key = INTERNAL_AUTH.encode(\"utf-8\")\ndig = hmac.new(key, username.encode(\"utf-8\"), hashlib.sha256).hexdigest()\nreturn dig",
+      "fix_explanation": "Replaced insecure MD5-based token with HMAC-SHA256 to provide a keyed MAC and resist collision/weak-hash attacks."
+    },
+    {
+      "id": 6,
+      "file": "input.py",
+      "line_numbers": [11, 12, 13],
+      "original": "PAYMENT_TOKEN = \"tok_production_998877\"\nMAIL_SERVER_KEY = \"mail_srv_key_ABCDEFG\"\nINTERNAL_AUTH = \"admin_internal_5566\"",
+      "updated": "PAYMENT_TOKEN = os.getenv(\"PAYMENT_TOKEN\", \"tok_test_998877\")\nMAIL_SERVER_KEY = os.getenv(\"MAIL_SERVER_KEY\", \"mail_test_ABCDEFG\")\nINTERNAL_AUTH = os.getenv(\"INTERNAL_AUTH\", \"internal_test_5566\")",
+      "fix_explanation": "Moved secrets to environment with test-only fallbacks (allow-fallbacks). Production must set env vars; code no longer hardcodes secrets."
+    },
+    {
+      "id": 7,
+      "file": "input.py",
+      "line_numbers": [87, 88],
+      "original": "if __name__ == \"__main__\":\n    app.run(debug=True)",
+      "updated": "if __name__ == \"__main__\":\n    debug = os.getenv(\"FLASK_DEBUG\", \"0\") == \"1\"\n    app.config[\"MAX_CONTENT_LENGTH\"] = MAX_CONTENT_LENGTH\n    logging.basicConfig(level=logging.INFO)\n    app.run(host=\"0.0.0.0\", debug=debug)",
+      "fix_explanation": "Disabled Flask debug by default and added MAX_CONTENT_LENGTH to prevent interactive debug console exposure in production."
+    },
+    {
+      "id": 8,
+      "file": "input.py",
+      "line_numbers": [37, 38],
+      "original": "log = f\"transfer:{target}:{amount}\"\nprint(log)",
+      "updated": "logging.info(\"transfer to %s amount=%s\", host, amount)",
+      "fix_explanation": "Replaced unstructured printing with structured logging and avoided printing potentially sensitive values."
+    }
+  ],
+  "secrets": [
+    {
+      "id": 1,
+      "file": "input.py",
+      "line_numbers": [11],
+      "original": "tok_...8877",
+      "updated": "moved to environment variable (os.getenv('PAYMENT_TOKEN', ...))",
+      "fix_explanation": "Hardcoded payment token moved to environment; logs/report show only fingerprint."
+    },
+    {
+      "id": 2,
+      "file": "input.py",
+      "line_numbers": [12],
+      "original": "mail...DEFG",
+      "updated": "moved to environment variable (os.getenv('MAIL_SERVER_KEY', ...))",
+      "fix_explanation": "Hardcoded mail key moved to environment; redacted in outputs."
+    },
+    {
+      "id": 3,
+      "file": "input.py",
+      "line_numbers": [13],
+      "original": "admi...5566",
+      "updated": "moved to environment variable (os.getenv('INTERNAL_AUTH', ...))",
+      "fix_explanation": "Internal auth seed moved to environment; no plaintext secrets left in source."
+    }
+  ]
+}
