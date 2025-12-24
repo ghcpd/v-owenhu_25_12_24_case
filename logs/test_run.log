@@ -1,0 +1,15 @@
+[2025-12-24T07:53:25.593901Z] START TEST: input_backup.py
+[2025-12-24T07:53:25.593901Z] OUT: SECRET FOUND: PAYMENT_TOKEN fingerprint=tok_...8877
+[2025-12-24T07:53:25.593901Z] OUT: SECRET FOUND: MAIL_SERVER_KEY fingerprint=mail...DEFG
+[2025-12-24T07:53:25.593901Z] OUT: SECRET FOUND: INTERNAL_AUTH fingerprint=admi...5566
+[2025-12-24T07:53:25.593901Z] OUT: INSECURE: subprocess with shell=True (command injection)
+[2025-12-24T07:53:25.593901Z] OUT: INSECURE: use of MD5 for security-sensitive hashing
+[2025-12-24T07:53:25.593901Z] OUT: INSECURE: Flask debug=True is enabled
+[2025-12-24T07:53:25.593901Z] OUT: INSECURE: requests.post called with variable 'url' (possible SSRF)
+[2025-12-24T07:53:25.593901Z] OUT: INSECURE: string-formatted SQL (possible SQL injection)
+[2025-12-24T07:53:25.593901Z] OUT: INSECURE: unsanitized printing/logging (may leak secrets)
+[2025-12-24T07:53:25.593901Z] OUT: INSECURE: shell zip usage with untrusted filename
+[2025-12-24T07:53:25.593901Z] TEST FAILED
+[2025-12-24T07:53:25.595902Z] START TEST: input.py
+[2025-12-24T07:53:25.595902Z] OUT: ALL CHECKS PASSED
+[2025-12-24T07:53:25.595902Z] TEST PASSED

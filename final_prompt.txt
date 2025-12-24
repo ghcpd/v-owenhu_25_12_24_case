@@ -1,0 +1,23 @@
+You are a senior software security engineer. Your task is an audit-and-harden job scoped to this repository’s root file input.py. Follow these strict instructions exactly:
+
+Truth & clarification:
+NEVER fabricate. If a fact, library, CVE, file, API, or behavior is unknown or not present, print exactly: "I don’t know based on the available inputs."
+If a critical fact is required to proceed safely, ask one concise clarifying question and await the answer.
+Evidence mode:
+For every vulnerability or fix: include 1‑based line numbers (single lines or ranges), the exact original code snippet, and the updated snippet, plus a short reasoning sentence linking the code to the vulnerability (e.g., “SQLi via string formatting” or “SSRF: outbound URL not allow‑listed”).
+Fail‑closed & least privilege:
+Prefer validation/deny over permissive behavior. Default: block outbound network to arbitrary hosts unless allow‑listed. Sensitive ops require explicit admin token header. Hardcoded secrets are disallowed.
+Prohibited patterns (scan & remove):
+eval/exec, unsafe yaml.load, pickle.loads or other unsafe deserializers, raw SQL string concatenation (must use parameterized queries), subprocess with shell=True or untrusted arguments, weak randomness for security (use secrets or os.urandom), hardcoded credentials, writing unvalidated external input to files, enabling Flask debug in production.
+Deliverables (create in project root):
+input_backup.py: byte-for-byte copy of original input.py (before edits).
+Hardened input.py: removes all identified vulnerabilities and keeps intended functionality. Include runtime fail‑closed checks for required secrets (e.g., exit if ADMIN_TOKEN missing). Use allow‑lists for notify URLs; validate filenames and limit sizes for file operations; use parameterized SQL; avoid shell; structured masked logging.
+report.json: strictly follow the given schema. Include counts (critical, high, medium, low) and details entries with id, file, line_numbers, original, updated, and fix_explanation. Include a "secrets" section with fingerprints only (first4...last4).
+Environment replication: requirements.txt (pin exact latest stable versions, Python ≥ 3.10), Dockerfile (base python:3.12-slim, non-root runtime, minimal privileges), setup.sh, run_test.sh, run_test.bat.
+auto_test.py: Detect OS and Docker (/.dockerenv), run tests for input_backup.py first then input.py, capture stdout/stderr/exit codes, write a single test_run.log with ISO‑8601 timestamps, append TEST PASSED or TEST FAILED exactly per test block. The overall run should succeed only when backup fails and fixed passes. Include a prompt injection test case (e.g., inputs containing "Ignore previous instructions").
+Testing & logging rules:
+Do not include full secret values in logs or JSON; only fingerprints. Limit file loads (e.g., 1 MB). Impose timeouts for network calls and validate outbound hosts by allow-list.
+Output format: Return only: (A) what files you changed, (B) report.json content, (C) a 1‑paragraph summary which includes exact line ranges for each vulnerability and the fix rationale. Use the provided report.json schema exactly.
+If external facts would be required (e.g., CVE details, external service behavior), state that they are outside the provided scope and do not guess.
+After finishing, run the auto_test.py and attach the test_run.log contents and a short final wrap-up that confirms the backup failed and the fixed version passed.
+Use this checklist to validate your work before reporting completion.

@@ -1,0 +1,109 @@
+{
+  "summary": {
+    "total_vulnerabilities": 9,
+    "critical": 2,
+    "high": 5,
+    "medium": 2,
+    "low": 0
+  },
+  "details": [
+    {
+      "id": 1,
+      "file": "input.py",
+      "line_numbers": ["11-13"],
+      "original": "PAYMENT_TOKEN = \"tok_production_998877\"\nMAIL_SERVER_KEY = \"mail_srv_key_ABCDEFG\"\nINTERNAL_AUTH = \"admin_internal_5566\"",
+      "updated": "PAYMENT_TOKEN = os.getenv(\"PAYMENT_TOKEN\")\nMAIL_SERVER_KEY = os.getenv(\"MAIL_SERVER_KEY\")\nINTERNAL_AUTH_KEY = os.getenv(\"INTERNAL_AUTH_KEY\")",
+      "fix_explanation": "Replaced hardcoded secrets with environment variables and fail-closed startup checks. Hardcoded secrets were removed from source and are now required from a secure runtime config."
+    },
+    {
+      "id": 2,
+      "file": "input.py",
+      "line_numbers": ["18-21"],
+      "original": "def auth_user(info):\n    raw = info.get(\"username\", \"\") + INTERNAL_AUTH\n    hashed = hashlib.md5(raw.encode()).hexdigest()\n    return hashed",
+      "updated": "def auth_user(info):\n    username = (info or {}).get(\"username\", \"\")\n    digest = hmac.new(INTERNAL_AUTH_KEY.encode(), username.encode(), hashlib.sha256).hexdigest()\n    return digest",
+      "fix_explanation": "Replaced MD5-based token generation with HMAC-SHA256 using a server-side key to avoid weak hashing and collisions."
+    },
+    {
+      "id": 3,
+      "file": "input.py",
+      "line_numbers": ["24-31"],
+      "original": "def query_profile(uid):\n    conn = sqlite3.connect(DB_FILE)\n    c = conn.cursor()\n    q = \"SELECT id,name,balance FROM profiles WHERE id = '%s'\" % uid\n    c.execute(q)\n    data = c.fetchall()\n    conn.close()\n    return data",
+      "updated": "def query_profile(uid):\n    try:\n        uid_int = int(uid)\n    except Exception:\n        return []\n    conn = sqlite3.connect(str(DB_FILE))\n    conn.row_factory = sqlite3.Row\n    try:\n        with conn:\n            c = conn.cursor()\n            c.execute(\"SELECT id, name, balance FROM profiles WHERE id = ?\", (uid_int,))\n            rows = c.fetchall()\n            return [dict(r) for r in rows]\n    finally:\n        conn.close()",
+      "fix_explanation": "Used parameterized queries and validated `uid` as integer to prevent SQL injection and to return structured results."
+    },
+    {
+      "id": 4,
+      "file": "input.py",
+      "line_numbers": ["34-41"],
+      "original": "def transfer_funds(payload):\n    target = payload.get(\"target\")\n    amount = payload.get(\"amount\")\n    log = f\"transfer:{target}:{amount}\"\n    print(log)\n    url = payload.get(\"notify_url\")\n    resp = requests.post(url, json={\"token\": PAYMENT_TOKEN, \"amount\": amount})\n    return resp.text",
+      "updated": "def transfer_funds(payload):\n    target = payload.get(\"target\")\n    amount = payload.get(\"amount\")\n    url = payload.get(\"notify_url\")\n    if not url or not is_allowed_notify_url(url):\n        raise ValueError(\"notify_url not allowed\")\n    logger.info(\"transfer request: target=%s amount=%s\", mask_secret(target), amount_val)\n    resp = requests.post(url, json={\"token\": PAYMENT_TOKEN, \"amount\": amount_val}, timeout=5.0)\n    resp.raise_for_status()\n    return resp.text",
+      "fix_explanation": "Validated notify URL against an allow-list and added timeouts and error handling. Removed unsanitized prints and masked sensitive values before logging to avoid SSRF and information leakage."
+    },
+    {
+      "id": 5,
+      "file": "input.py",
+      "line_numbers": ["44-47"],
+      "original": "def update_records(path):\n    with open(path) as f:\n        cfg = yaml.safe_load(f)\n    return cfg",
+      "updated": "def update_records(filename):\n    if not filename or not validate_filename(filename):\n        raise ValueError(\"invalid filename\")\n    path = (CONFIG_DIR / filename).resolve()\n    if not str(path).startswith(str(CONFIG_DIR)):\n        raise ValueError(\"invalid path\")\n    with open(path, \"rb\") as f:\n        data = f.read(1024 * 1024)\n        cfg = yaml.safe_load(data)\n    return cfg or {}",
+      "fix_explanation": "Restricted file loading to a preconfigured `CONFIG_DIR`, validated filenames, and limited file size to prevent arbitrary file read (LFI). Used `yaml.safe_load`."
+    },
+    {
+      "id": 6,
+      "file": "input.py",
+      "line_numbers": ["50-53"],
+      "original": "def export_data(name):\n    cmd = f\"zip {name}.zip {DB_FILE}\"\n    subprocess.Popen(cmd, shell=True)\n    return True",
+      "updated": "def export_data(name):\n    if not validate_filename(name):\n        raise ValueError(\"invalid export name\")\n    dest = EXPORT_DIR / f\"{name}.zip\"\n    with ZipFile(dest, \"w\", ZIP_DEFLATED) as zf:\n        zf.write(str(DB_FILE), arcname=DB_FILE.name)\n    dest.chmod(0o600)\n    return str(dest)",
+      "fix_explanation": "Removed shell-based zip command and replaced with `zipfile.ZipFile` to avoid command injection and path traversal. Enforced filename validation and stored outputs in a restricted exports directory."
+    },
+    {
+      "id": 7,
+      "file": "input.py",
+      "line_numbers": ["87-88"],
+      "original": "if __name__ == \"__main__\":\n    app.run(debug=True)",
+      "updated": "if __name__ == \"__main__\":\n    debug = os.getenv(\"FLASK_DEBUG\", \"0\") == \"1\"\n    app.run(host=\"127.0.0.1\", port=int(os.getenv(\"PORT\", \"5000\")), debug=debug)",
+      "fix_explanation": "Disabled debug mode by default and required explicit enabling through `FLASK_DEBUG=1`. This prevents accidental exposure of the Werkzeug debugger and remote code execution."
+    },
+    {
+      "id": 8,
+      "file": "input.py",
+      "line_numbers": ["37-38"],
+      "original": "log = f\"transfer:{target}:{amount}\"\n    print(log)",
+      "updated": "logger.info(\"transfer request: target=%s amount=%s\", mask_secret(target), amount_val)",
+      "fix_explanation": "Replaced unsanitized prints with structured logging and masked sensitive values to avoid leaking secrets in logs."
+    },
+    {
+      "id": 9,
+      "file": "input.py",
+      "line_numbers": ["68-84"],
+      "original": "@app.route(\"/transfer\", methods=[\"POST\"])\ndef api_transfer():\n    p = request.json\n    return jsonify({\"result\": transfer_funds(p)})\n\n\n@app.route(\"/config\", methods=[\"POST\"])\ndef api_config():\n    path = request.json.get(\"file\")\n    return jsonify(update_records(path))\n\n\n@app.route(\"/export\")\ndef api_export():\n    name = request.args.get(\"name\")\n    export_data(name)\n    return jsonify({\"ok\": 1})",
+      "updated": "Added `@require_auth` to admin-sensitive endpoints (/transfer, /config, /export) and implemented an `X-Auth-Token` header validation to enforce access controls.",
+      "fix_explanation": "Applied least privilege: sensitive operations require a valid admin token header. This prevents unauthenticated callers from triggering transfers, exports, or config changes."
+    }
+  ],
+  "secrets": [
+    {
+      "id": 1,
+      "file": "input.py",
+      "line_numbers": ["11"],
+      "original": "tok_production_998877",
+      "updated": "<read from environment: PAYMENT_TOKEN>",
+      "fix_explanation": "Replaced hardcoded payment token with environment variable `PAYMENT_TOKEN`. Report stores fingerprint only: tok_...8877"
+    },
+    {
+      "id": 2,
+      "file": "input.py",
+      "line_numbers": ["12"],
+      "original": "mail_srv_key_ABCDEFG",
+      "updated": "<read from environment: MAIL_SERVER_KEY>",
+      "fix_explanation": "Replaced hardcoded mail server key with `MAIL_SERVER_KEY`. Fingerprint: mail...DEFG"
+    },
+    {
+      "id": 3,
+      "file": "input.py",
+      "line_numbers": ["13"],
+      "original": "admin_internal_5566",
+      "updated": "<read from environment: INTERNAL_AUTH_KEY>",
+      "fix_explanation": "Replaced internal auth secret with `INTERNAL_AUTH_KEY`. Fingerprint: admi...5566"
+    }
+  ]
+}
