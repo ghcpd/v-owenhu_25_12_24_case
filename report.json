@@ -1,0 +1,160 @@
+{
+  "summary": {
+    "total_vulnerabilities": 8,
+    "critical": 3,
+    "high": 3,
+    "medium": 2,
+    "low": 0
+  },
+  "details": [
+    {
+      "id": 1,
+      "file": "input.py",
+      "line_numbers": [25],
+      "vulnerability_type": "SQL Injection",
+      "severity": "critical",
+      "original": "q = \"SELECT id,name,balance FROM profiles WHERE id = '%s'\" % uid\n    c.execute(q)",
+      "updated": "c.execute(\"SELECT id, name, balance FROM profiles WHERE id = ?\", (uid,))",
+      "fix_explanation": "Replaced string concatenation with parameterized queries using ? placeholders. This prevents attackers from injecting SQL code through the uid parameter."
+    },
+    {
+      "id": 2,
+      "file": "input.py",
+      "line_numbers": [40],
+      "vulnerability_type": "Command Injection",
+      "severity": "critical",
+      "original": "cmd = f\"zip {name}.zip {DB_FILE}\"\n    subprocess.Popen(cmd, shell=True)",
+      "updated": "cmd = [\"zip\", f\"{name}.zip\", DB_FILE]\n    result = subprocess.run(cmd, capture_output=True, timeout=30, check=False)",
+      "fix_explanation": "Replaced subprocess.Popen with shell=True with subprocess.run using list format. Added input validation (alphanumeric + underscore only), length limit (50 chars), and timeout. This eliminates shell injection vulnerabilities."
+    },
+    {
+      "id": 3,
+      "file": "input.py",
+      "line_numbers": [13, 14, 15],
+      "vulnerability_type": "Hardcoded Secrets",
+      "severity": "critical",
+      "original": "PAYMENT_TOKEN = \"tok_production_998877\"\nMAIL_SERVER_KEY = \"mail_srv_key_ABCDEFG\"\nINTERNAL_AUTH = \"admin_internal_5566\"",
+      "updated": "PAYMENT_TOKEN = os.environ.get(\"PAYMENT_TOKEN\")\nMAIL_SERVER_KEY = os.environ.get(\"MAIL_SERVER_KEY\")\nINTERNAL_AUTH_SECRET = os.environ.get(\"INTERNAL_AUTH_SECRET\")",
+      "fix_explanation": "Moved all secrets from hardcoded literals to environment variables. Added validation to ensure all required secrets are present at startup. This prevents credential exposure in version control and source code repositories."
+    },
+    {
+      "id": 4,
+      "file": "input.py",
+      "line_numbers": [36],
+      "vulnerability_type": "Server-Side Request Forgery (SSRF)",
+      "severity": "high",
+      "original": "resp = requests.post(url, json={\"token\": PAYMENT_TOKEN, \"amount\": amount})",
+      "updated": "# Added domain allowlist validation\n    parsed = urlparse(url)\n    if parsed.hostname not in ALLOWED_NOTIFY_DOMAINS:\n        return {\"error\": \"Invalid notify domain\"}\n    # Timeout prevents hanging\n    resp = requests.post(url, json={\"amount\": amount}, timeout=5, verify=True)",
+      "fix_explanation": "Added URL validation against allowlist of trusted domains (ALLOWED_NOTIFY_DOMAINS). Removed sensitive PAYMENT_TOKEN from outbound requests. Added timeout and SSL verification. This prevents attackers from redirecting requests to internal systems or extracting tokens."
+    },
+    {
+      "id": 5,
+      "file": "input.py",
+      "line_numbers": [22],
+      "vulnerability_type": "Weak Cryptographic Hashing",
+      "severity": "high",
+      "original": "raw = info.get(\"username\", \"\") + INTERNAL_AUTH\n    hashed = hashlib.md5(raw.encode()).hexdigest()",
+      "updated": "# Use HMAC-SHA256 with secret from environment\n    hashed = hmac.new(\n        INTERNAL_AUTH_SECRET.encode('utf-8'),\n        message,\n        hashlib.sha256\n    ).hexdigest()",
+      "fix_explanation": "Replaced MD5 (cryptographically broken) with HMAC-SHA256. MD5 is vulnerable to collision attacks and rainbow tables. HMAC-SHA256 provides both integrity and authenticity for authentication tokens."
+    },
+    {
+      "id": 6,
+      "file": "input.py",
+      "line_numbers": [43],
+      "vulnerability_type": "Arbitrary File Access / Path Traversal",
+      "severity": "high",
+      "original": "def update_records(path):\n    with open(path) as f:\n        cfg = yaml.safe_load(f)",
+      "updated": "ALLOWED_CONFIG_PATHS = {\"/etc/config.yaml\"}\nif path not in ALLOWED_CONFIG_PATHS:\n    return {}\n    with open(path, 'r') as f:",
+      "fix_explanation": "Added allowlist validation for file paths. Only whitelisted paths (e.g., /etc/config.yaml) are permitted. This prevents attackers from reading arbitrary files via path traversal or directory traversal attacks."
+    },
+    {
+      "id": 7,
+      "file": "input.py",
+      "line_numbers": [78],
+      "vulnerability_type": "Debug Mode Enabled in Production",
+      "severity": "medium",
+      "original": "if __name__ == \"__main__\":\n    app.run(debug=True)",
+      "updated": "debug_mode = os.environ.get(\"FLASK_DEBUG\", \"false\").lower() == \"true\"\napp.run(debug=debug_mode, host=\"127.0.0.1\")",
+      "fix_explanation": "Disabled debug mode by default and made it controllable via FLASK_DEBUG environment variable. Added localhost-only binding (127.0.0.1). Debug mode exposes sensitive information and allows arbitrary code execution."
+    },
+    {
+      "id": 8,
+      "file": "input.py",
+      "line_numbers": [32, 34, 36, 39],
+      "vulnerability_type": "Missing Input Validation & Error Handling",
+      "severity": "medium",
+      "original": "def query_profile(uid):\n    conn = sqlite3.connect(DB_FILE)\n    c = conn.cursor()\n    q = \"SELECT...\" % uid",
+      "updated": "# Added comprehensive validation and error handling\n    if not isinstance(uid, str) or not uid.isdigit():\n        return []\n    try:\n        c.execute(...)\n    except sqlite3.Error as e:\n        logger.error(f\"Database error: {str(e)[:100]}\")",
+      "fix_explanation": "Added input type and format validation for all user-supplied parameters. Implemented comprehensive try-catch error handling across all functions. Added secure logging that redacts sensitive information. This prevents injection attacks, information disclosure, and improves robustness."
+    }
+  ],
+  "secrets": [
+    {
+      "id": 1,
+      "file": "input.py",
+      "line_numbers": [13],
+      "secret_type": "Payment Token",
+      "original": "tok_...877",
+      "updated": "Moved to environment variable PAYMENT_TOKEN",
+      "fix_explanation": "Hardcoded payment token replaced with environment variable. Use: export PAYMENT_TOKEN='tok_production_998877' in secure environment."
+    },
+    {
+      "id": 2,
+      "file": "input.py",
+      "line_numbers": [14],
+      "secret_type": "Mail Server Key",
+      "original": "mail_...EFG",
+      "updated": "Moved to environment variable MAIL_SERVER_KEY",
+      "fix_explanation": "Hardcoded mail key replaced with environment variable. Use: export MAIL_SERVER_KEY='mail_srv_key_ABCDEFG' in secure environment."
+    },
+    {
+      "id": 3,
+      "file": "input.py",
+      "line_numbers": [15],
+      "secret_type": "Internal Auth Secret",
+      "original": "admi...5566",
+      "updated": "Moved to environment variable INTERNAL_AUTH_SECRET",
+      "fix_explanation": "Hardcoded auth secret replaced with environment variable. Use: export INTERNAL_AUTH_SECRET='admin_internal_5566' in secure environment. Consider using a secure secret management service (AWS Secrets Manager, HashiCorp Vault, etc.) in production."
+    }
+  ],
+  "additional_recommendations": {
+    "short_term": [
+      "Set all required environment variables before running the application",
+      "Run security scanning tools: pip-audit, bandit, safety",
+      "Enable HTTPS/TLS for all network communication",
+      "Implement rate limiting on API endpoints",
+      "Add authentication/authorization checks to all endpoints"
+    ],
+    "medium_term": [
+      "Integrate SAST scanning in CI/CD pipeline (Bandit, Semgrep)",
+      "Deploy container scanning (Trivy, Grype) on Docker images",
+      "Implement comprehensive logging and monitoring",
+      "Add Web Application Firewall (WAF) rules",
+      "Perform regular dependency updates and security patching"
+    ],
+    "long_term": [
+      "Migrate to secrets management service (AWS Secrets Manager, Vault)",
+      "Implement OAuth2/OpenID Connect for proper authentication",
+      "Add database-level access controls and encryption",
+      "Implement comprehensive API security testing",
+      "Establish security incident response procedures"
+    ]
+  },
+  "compliance_notes": {
+    "OWASP_Top_10": {
+      "A03_2021_Injection": "FIXED - SQL injection and command injection now prevented",
+      "A07_2021_Cross_Site_Scripting": "N/A - No user-generated content rendering",
+      "A01_2021_Broken_Access_Control": "RECOMMENDED - Add authentication and authorization",
+      "A04_2021_Insecure_Design": "IMPROVED - Added input validation and error handling"
+    },
+    "CWE_Mappings": {
+      "CWE-89": "SQL Injection - FIXED",
+      "CWE-78": "OS Command Injection - FIXED",
+      "CWE-798": "Hardcoded Credentials - FIXED",
+      "CWE-918": "Server-Side Request Forgery - FIXED",
+      "CWE-327": "Use of Broken Cryptography - FIXED",
+      "CWE-434": "Unrestricted Upload - N/A",
+      "CWE-200": "Information Exposure - IMPROVED"
+    }
+  }
+}

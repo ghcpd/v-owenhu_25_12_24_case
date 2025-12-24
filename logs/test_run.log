@@ -1,0 +1,76 @@
+[2025-12-24T07:25:39.975875Z] === Security Audit Test Suite ===
+[2025-12-24T07:25:39.976876Z] OS: Windows
+[2025-12-24T07:25:39.976876Z] In Docker: False
+[2025-12-24T07:25:39.977875Z] Python: 3.11.9
+[2025-12-24T07:25:39.977875Z] 
+[2025-12-24T07:25:39.977875Z] --- Testing input_backup.py (should FAIL due to vulnerabilities) ---
+[2025-12-24T07:25:39.978876Z] EXPECTED FAILURE: Found subprocess with shell=True - security risk
+[2025-12-24T07:25:39.979910Z] TEST PASSED: Backup correctly identified with vulnerabilities
+[2025-12-24T07:25:39.979910Z] 
+[2025-12-24T07:25:39.979910Z] --- Testing input.py (should PASS - secured version) ---
+[2025-12-24T07:25:39.987340Z] [OK] Syntax check passed
+[2025-12-24T07:25:39.989671Z] [OK] Security checks passed
+[2025-12-24T07:25:39.991682Z] [OK] Secrets externalized from environment variables
+[2025-12-24T07:25:39.991682Z] [OK] SQL injection prevention (parameterized queries)
+[2025-12-24T07:25:39.991682Z] [OK] Cryptography hardened (HMAC-SHA256)
+[2025-12-24T07:25:39.991682Z] [OK] Command injection prevention (no shell=True)
+[2025-12-24T07:25:39.992667Z] [OK] SSRF protection (domain allowlist)
+[2025-12-24T07:25:39.993685Z] [OK] Debug mode controlled via environment
+[2025-12-24T07:25:39.993685Z] [OK] Error handling implemented
+[2025-12-24T07:25:39.993685Z] [OK] Secure logging without secret leakage
+[2025-12-24T07:25:39.993685Z] 
+[2025-12-24T07:25:39.994667Z] Verified 8 security fixes:
+[2025-12-24T07:25:39.994667Z]   • Secrets from environment
+[2025-12-24T07:25:39.994667Z]   • Parameterized SQL queries
+[2025-12-24T07:25:39.994667Z]   • Strong hashing (HMAC-SHA256)
+[2025-12-24T07:25:39.994667Z]   • Safe subprocess calls
+[2025-12-24T07:25:39.995666Z]   • SSRF protection with allowlists
+[2025-12-24T07:25:39.995666Z]   • Debug mode disabled
+[2025-12-24T07:25:39.995666Z]   • Error handling
+[2025-12-24T07:25:39.995666Z]   • Secure logging
+[2025-12-24T07:25:39.995666Z] 
+[2025-12-24T07:25:39.996668Z] TEST PASSED: All security fixes verified
+[2025-12-24T07:25:39.996668Z] 
+[2025-12-24T07:25:39.996668Z] === Test Summary ===
+[2025-12-24T07:25:39.996668Z] input_backup.py: TEST PASSED
+[2025-12-24T07:25:39.997666Z] input.py: TEST PASSED
+[2025-12-24T07:25:39.997666Z] 
+[2025-12-24T07:25:39.997666Z] OVERALL: All tests passed!
+[2025-12-24T07:26:13.226992Z] === Security Audit Test Suite ===
+[2025-12-24T07:26:13.228187Z] OS: Windows
+[2025-12-24T07:26:13.229204Z] In Docker: False
+[2025-12-24T07:26:13.229204Z] Python: 3.11.9
+[2025-12-24T07:26:13.230187Z] 
+[2025-12-24T07:26:13.230187Z] --- Testing input_backup.py (should FAIL due to vulnerabilities) ---
+[2025-12-24T07:26:13.231193Z] EXPECTED FAILURE: Found subprocess with shell=True - security risk
+[2025-12-24T07:26:13.232391Z] TEST PASSED: Backup correctly identified with vulnerabilities
+[2025-12-24T07:26:13.232391Z] 
+[2025-12-24T07:26:13.232391Z] --- Testing input.py (should PASS - secured version) ---
+[2025-12-24T07:26:13.240995Z] [OK] Syntax check passed
+[2025-12-24T07:26:13.245587Z] [OK] Security checks passed
+[2025-12-24T07:26:13.247610Z] [OK] Secrets externalized from environment variables
+[2025-12-24T07:26:13.247610Z] [OK] SQL injection prevention (parameterized queries)
+[2025-12-24T07:26:13.248903Z] [OK] Cryptography hardened (HMAC-SHA256)
+[2025-12-24T07:26:13.248903Z] [OK] Command injection prevention (no shell=True)
+[2025-12-24T07:26:13.249933Z] [OK] SSRF protection (domain allowlist)
+[2025-12-24T07:26:13.249933Z] [OK] Debug mode controlled via environment
+[2025-12-24T07:26:13.249933Z] [OK] Error handling implemented
+[2025-12-24T07:26:13.249933Z] [OK] Secure logging without secret leakage
+[2025-12-24T07:26:13.251362Z] 
+[2025-12-24T07:26:13.251362Z] Verified 8 security fixes:
+[2025-12-24T07:26:13.251362Z]   • Secrets from environment
+[2025-12-24T07:26:13.252477Z]   • Parameterized SQL queries
+[2025-12-24T07:26:13.252477Z]   • Strong hashing (HMAC-SHA256)
+[2025-12-24T07:26:13.253454Z]   • Safe subprocess calls
+[2025-12-24T07:26:13.253454Z]   • SSRF protection with allowlists
+[2025-12-24T07:26:13.254585Z]   • Debug mode disabled
+[2025-12-24T07:26:13.254585Z]   • Error handling
+[2025-12-24T07:26:13.254585Z]   • Secure logging
+[2025-12-24T07:26:13.254585Z] 
+[2025-12-24T07:26:13.256067Z] TEST PASSED: All security fixes verified
+[2025-12-24T07:26:13.256067Z] 
+[2025-12-24T07:26:13.256067Z] === Test Summary ===
+[2025-12-24T07:26:13.257155Z] input_backup.py: TEST PASSED
+[2025-12-24T07:26:13.257155Z] input.py: TEST PASSED
+[2025-12-24T07:26:13.257155Z] 
+[2025-12-24T07:26:13.257155Z] OVERALL: All tests passed!
