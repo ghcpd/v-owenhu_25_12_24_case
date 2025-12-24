@@ -1,0 +1,109 @@
+{
+  "summary": {
+    "total_vulnerabilities": 9,
+    "critical": 3,
+    "high": 4,
+    "medium": 1,
+    "low": 1
+  },
+  "details": [
+    {
+      "id": 1,
+      "file": "input.py",
+      "line_numbers": [11, 12, 13],
+      "original": "REDACTED: tok_....8877, mail....DEFG, admi....5566",
+      "updated": "Secrets moved to environment variables (no hardcoded credentials). See use of os.getenv(...) at module top.",
+      "fix_explanation": "Hardcoded high-privilege secrets removed and required from environment; secrets are redacted in logs and not emitted. Fail-closed if missing for sensitive operations."
+    },
+    {
+      "id": 2,
+      "file": "input.py",
+      "line_numbers": [27],
+      "original": "q = \"SELECT id,name,balance FROM profiles WHERE id = '%s'\" % uid",
+      "updated": "c.execute(\"SELECT id, name, balance FROM profiles WHERE id = ?\", (uid,))",
+      "fix_explanation": "Replaced string interpolation with parameterized queries to prevent SQL injection and added strict uid validation."
+    },
+    {
+      "id": 3,
+      "file": "input.py",
+      "line_numbers": [51, 52],
+      "original": "cmd = f\"zip {name}.zip {DB_FILE}\"\n    subprocess.Popen(cmd, shell=True)",
+      "updated": "Use Python's zipfile module to create archives and avoid shell execution (no subprocess.shell()).",
+      "fix_explanation": "Eliminated command injection by removing shell-based zipping; use zipfile and validate filename characters."
+    },
+    {
+      "id": 4,
+      "file": "input.py",
+      "line_numbers": [39, 40],
+      "original": "url = payload.get(\"notify_url\")\n    resp = requests.post(url, json={\"token\": PAYMENT_TOKEN, \"amount\": amount})",
+      "updated": "validate notify_url against ALLOWED_NOTIFY_HOSTS and use requests.post(..., timeout=REQUESTS_TIMEOUT); do not emit PAYMENT_TOKEN in requests/logs.",
+      "fix_explanation": "Prevent SSRF by allow-listing hosts, enforcing timeouts and not leaking tokens. Outbound network is denied by default."
+    },
+    {
+      "id": 5,
+      "file": "input.py",
+      "line_numbers": [45, 46, 76],
+      "original": "with open(path) as f:\n        cfg = yaml.safe_load(f)\n... request.json.get(\"file\")",
+      "updated": "Restrict config file reads to a configured CONFIG_DIR, resolve path and block traversal, limit file size.",
+      "fix_explanation": "Closed arbitrary file read/path traversal by canonicalizing paths and enforcing directory allow-listing and size limits."
+    },
+    {
+      "id": 6,
+      "file": "input.py",
+      "line_numbers": [18, 20],
+      "original": "raw = info.get(\"username\", \"\") + INTERNAL_AUTH\n    hashed = hashlib.md5(raw.encode()).hexdigest()",
+      "updated": "Use HMAC-SHA256 with an environment-held secret (hmac.new(..., hashlib.sha256)).",
+      "fix_explanation": "MD5 is cryptographically weak and allows token forgery; upgraded to HMAC-SHA256 (user approved)."
+    },
+    {
+      "id": 7,
+      "file": "input.py",
+      "line_numbers": [87, 88],
+      "original": "if __name__ == \"__main__\":\n    app.run(debug=True)",
+      "updated": "app.run(..., debug=False) and require explicit env configuration for host/port; debug disabled by default.",
+      "fix_explanation": "Disabled debug mode to avoid code execution, detailed tracebacks, and secret exposure in production."
+    },
+    {
+      "id": 8,
+      "file": "input.py",
+      "line_numbers": [37, 38],
+      "original": "log = f\"transfer:{target}:{amount}\"\n    print(log)",
+      "updated": "Print only non-sensitive, structured log: print(f\"transfer:target={target!s}:amount={amount}\") and never include secrets.",
+      "fix_explanation": "Reduced information leakage in logs and removed potential exposure of sensitive fields."
+    },
+    {
+      "id": 9,
+      "file": "input.py",
+      "line_numbers": [1, 100],
+      "original": "No input size limits, no outbound network allow-list by default, and missing error handling in several places.",
+      "updated": "Added size limits, timeouts, validation, and explicit error handling. Default-deny for network and config access.",
+      "fix_explanation": "Improved robustness and applied fail-closed defaults for unknown/unsafe inputs."
+    }
+  ],
+  "secrets": [
+    {
+      "id": 1,
+      "file": "input.py",
+      "line_numbers": [11],
+      "original": "tok_...8877",
+      "updated": "Loaded from env var PAYMENT_TOKEN; redacted in logs.",
+      "fix_explanation": "Replaced hardcoded payment token with an environment-supplied secret and never log full value; only fingerprint shown."
+    },
+    {
+      "id": 2,
+      "file": "input.py",
+      "line_numbers": [12],
+      "original": "mail...DEFG",
+      "updated": "Loaded from env var MAIL_SERVER_KEY; redacted in logs.",
+      "fix_explanation": "Replaced hardcoded mail server key with env var and redaction."
+    },
+    {
+      "id": 3,
+      "file": "input.py",
+      "line_numbers": [13],
+      "original": "admi...5566",
+      "updated": "Loaded from env var INTERNAL_AUTH; required for HMAC operations.",
+      "fix_explanation": "Replaced hardcoded internal auth secret with env var; fail-closed if missing."
+    }
+  ]
+}

@@ -1,0 +1,447 @@
+2025-12-24T14:10:46.336250+08:00 Environment: {'os': 'nt', 'platform': 'win32', 'in_docker': False}
+2025-12-24T14:10:46.338590+08:00 START input_backup.py
+2025-12-24T14:10:47.268497+08:00 MODULE: input_backup.py
+TS: 2025-12-24T14:10:47.267491+08:00
+STDOUT:
+== Running tests for input_backup.py ==
+Static findings:
+ - prohibited pattern: shell_true
+ - prohibited pattern: unsafe_subprocess
+ - prohibited pattern: requests_post_unchecked
+ - hardcoded-secret fingerprint=tok_...8877
+ - hardcoded-secret fingerprint=mail...DEFG
+ - hardcoded-secret fingerprint=admi...5566
+transfer:x:1
+Functional errors:
+ - auth_user did not return HMAC-SHA256 hex (expected 64 hex chars)
+ - transfer_funds allowed outbound URL without allow-listing
+ - export_data failed: table profiles already exists
+Expected: insecure — detected issues. (this is PASS for the backup validation)
+
+STDERR:
+
+STATIC_FINDINGS:
+prohibited pattern: shell_true
+prohibited pattern: unsafe_subprocess
+prohibited pattern: requests_post_unchecked
+hardcoded-secret fingerprint=tok_...8877
+hardcoded-secret fingerprint=mail...DEFG
+hardcoded-secret fingerprint=admi...5566
+2025-12-24T14:10:47.268497+08:00 --- input_backup.py SUMMARY ---
+== Running tests for input_backup.py ==
+Static findings:
+ - prohibited pattern: shell_true
+ - prohibited pattern: unsafe_subprocess
+ - prohibited pattern: requests_post_unchecked
+ - hardcoded-secret fingerprint=tok_...8877
+ - hardcoded-secret fingerprint=mail...DEFG
+ - hardcoded-secret fingerprint=admi...5566
+transfer:x:1
+Functional errors:
+ - auth_user did not return HMAC-SHA256 hex (expected 64 hex chars)
+ - transfer_funds allowed outbound URL without allow-listing
+ - export_data failed: table profiles already exists
+Expected: insecure — detected issues. (this is PASS for the backup validation)
+TEST FAILED
+2025-12-24T14:10:47.271829+08:00 START input.py
+2025-12-24T14:10:47.482457+08:00 MODULE: input.py
+TS: 2025-12-24T14:10:47.482457+08:00
+STDOUT:
+== Running tests for input.py ==
+No static findings detected.
+transfer:target=x:amount=1
+Functional errors:
+ - update_records failed: path not allowed
+ - export_data failed: table profiles already exists
+Fixed version failed checks.
+
+STDERR:
+
+2025-12-24T14:10:47.483466+08:00 --- input.py SUMMARY ---
+== Running tests for input.py ==
+No static findings detected.
+transfer:target=x:amount=1
+Functional errors:
+ - update_records failed: path not allowed
+ - export_data failed: table profiles already exists
+Fixed version failed checks.
+TEST FAILED
+2025-12-24T14:10:47.483466+08:00 backup_failed=True fixed_ok=False overall_success=False
+2025-12-24T14:14:01.852235+08:00 Environment: {'os': 'nt', 'platform': 'win32', 'in_docker': False}
+2025-12-24T14:14:01.853739+08:00 START input_backup.py
+2025-12-24T14:14:02.484603+08:00 MODULE: input_backup.py
+TS: 2025-12-24T14:14:02.484603+08:00
+STDOUT:
+== Running tests for input_backup.py ==
+Static findings:
+ - prohibited pattern: shell_true
+ - prohibited pattern: unsafe_subprocess
+ - prohibited pattern: requests_post_unchecked
+ - hardcoded-secret fingerprint=tok_...8877
+ - hardcoded-secret fingerprint=mail...DEFG
+ - hardcoded-secret fingerprint=admi...5566
+transfer:x:1
+Functional errors:
+ - auth_user did not return HMAC-SHA256 hex (expected 64 hex chars)
+ - transfer_funds allowed outbound URL without allow-listing
+ - export_data failed: expected str, bytes or os.PathLike object, not bool
+Expected: insecure — detected issues. (this is PASS for the backup validation)
+
+STDERR:
+
+STATIC_FINDINGS:
+prohibited pattern: shell_true
+prohibited pattern: unsafe_subprocess
+prohibited pattern: requests_post_unchecked
+hardcoded-secret fingerprint=tok_...8877
+hardcoded-secret fingerprint=mail...DEFG
+hardcoded-secret fingerprint=admi...5566
+2025-12-24T14:14:02.484603+08:00 --- input_backup.py SUMMARY ---
+== Running tests for input_backup.py ==
+Static findings:
+ - prohibited pattern: shell_true
+ - prohibited pattern: unsafe_subprocess
+ - prohibited pattern: requests_post_unchecked
+ - hardcoded-secret fingerprint=tok_...8877
+ - hardcoded-secret fingerprint=mail...DEFG
+ - hardcoded-secret fingerprint=admi...5566
+transfer:x:1
+Functional errors:
+ - auth_user did not return HMAC-SHA256 hex (expected 64 hex chars)
+ - transfer_funds allowed outbound URL without allow-listing
+ - export_data failed: expected str, bytes or os.PathLike object, not bool
+Expected: insecure — detected issues. (this is PASS for the backup validation)
+TEST FAILED
+2025-12-24T14:14:02.486993+08:00 START input.py
+2025-12-24T14:14:02.713719+08:00 MODULE: input.py
+TS: 2025-12-24T14:14:02.713719+08:00
+STDOUT:
+== Running tests for input.py ==
+No static findings detected.
+transfer:target=x:amount=1
+No issues detected and functional tests passed.
+
+STDERR:
+
+2025-12-24T14:14:02.714730+08:00 --- input.py SUMMARY ---
+== Running tests for input.py ==
+No static findings detected.
+transfer:target=x:amount=1
+No issues detected and functional tests passed.
+TEST PASSED
+2025-12-24T14:14:02.715729+08:00 backup_failed=True fixed_ok=True overall_success=True
+2025-12-24T14:15:30.812519+08:00 Environment: {'os': 'nt', 'platform': 'win32', 'in_docker': False}
+2025-12-24T14:15:30.814040+08:00 START input_backup.py
+2025-12-24T14:15:31.429056+08:00 MODULE: input_backup.py
+TS: 2025-12-24T14:15:31.427546+08:00
+STDOUT:
+== Running tests for input_backup.py ==
+Static findings:
+ - prohibited pattern: shell_true
+ - prohibited pattern: unsafe_subprocess
+ - prohibited pattern: requests_post_unchecked
+ - hardcoded-secret fingerprint=tok_...8877
+ - hardcoded-secret fingerprint=mail...DEFG
+ - hardcoded-secret fingerprint=admi...5566
+transfer:x:1
+Functional errors:
+ - auth_user did not return HMAC-SHA256 hex (expected 64 hex chars)
+ - transfer_funds allowed outbound URL without allow-listing
+ - export_data failed: expected str, bytes or os.PathLike object, not bool
+Expected: insecure — detected issues. (this is PASS for the backup validation)
+
+STDERR:
+
+STATIC_FINDINGS:
+prohibited pattern: shell_true
+prohibited pattern: unsafe_subprocess
+prohibited pattern: requests_post_unchecked
+hardcoded-secret fingerprint=tok_...8877
+hardcoded-secret fingerprint=mail...DEFG
+hardcoded-secret fingerprint=admi...5566
+2025-12-24T14:15:31.429056+08:00 --- input_backup.py SUMMARY ---
+== Running tests for input_backup.py ==
+Static findings:
+ - prohibited pattern: shell_true
+ - prohibited pattern: unsafe_subprocess
+ - prohibited pattern: requests_post_unchecked
+ - hardcoded-secret fingerprint=tok_...8877
+ - hardcoded-secret fingerprint=mail...DEFG
+ - hardcoded-secret fingerprint=admi...5566
+transfer:x:1
+Functional errors:
+ - auth_user did not return HMAC-SHA256 hex (expected 64 hex chars)
+ - transfer_funds allowed outbound URL without allow-listing
+ - export_data failed: expected str, bytes or os.PathLike object, not bool
+Expected: insecure — detected issues. (this is PASS for the backup validation)
+TEST FAILED
+2025-12-24T14:15:31.431208+08:00 START input.py
+2025-12-24T14:15:31.670274+08:00 MODULE: input.py
+TS: 2025-12-24T14:15:31.670274+08:00
+STDOUT:
+== Running tests for input.py ==
+No static findings detected.
+transfer:target=x:amount=1
+No issues detected and functional tests passed.
+
+STDERR:
+
+2025-12-24T14:15:31.671696+08:00 --- input.py SUMMARY ---
+== Running tests for input.py ==
+No static findings detected.
+transfer:target=x:amount=1
+No issues detected and functional tests passed.
+TEST PASSED
+2025-12-24T14:15:31.671696+08:00 backup_failed=True fixed_ok=True overall_success=True
+2025-12-24T14:17:06.310049+08:00 Environment: {'os': 'nt', 'platform': 'win32', 'in_docker': False}
+2025-12-24T14:17:06.311991+08:00 START input_backup.py
+2025-12-24T14:17:06.955023+08:00 MODULE: input_backup.py
+TS: 2025-12-24T14:17:06.955023+08:00
+STDOUT:
+== Running tests for input_backup.py ==
+Static findings:
+ - prohibited pattern: shell_true
+ - prohibited pattern: unsafe_subprocess
+ - prohibited pattern: requests_post_unchecked
+ - hardcoded-secret fingerprint=tok_...8877
+ - hardcoded-secret fingerprint=mail...DEFG
+ - hardcoded-secret fingerprint=admi...5566
+transfer:x:1
+Functional errors:
+ - auth_user did not return HMAC-SHA256 hex (expected 64 hex chars)
+ - transfer_funds allowed outbound URL without allow-listing
+ - export_data failed: expected str, bytes or os.PathLike object, not bool
+Expected: insecure — detected issues. (this is PASS for the backup validation)
+
+STDERR:
+
+STATIC_FINDINGS:
+prohibited pattern: shell_true
+prohibited pattern: unsafe_subprocess
+prohibited pattern: requests_post_unchecked
+hardcoded-secret fingerprint=tok_...8877
+hardcoded-secret fingerprint=mail...DEFG
+hardcoded-secret fingerprint=admi...5566
+2025-12-24T14:17:06.956080+08:00 --- input_backup.py SUMMARY ---
+== Running tests for input_backup.py ==
+Static findings:
+ - prohibited pattern: shell_true
+ - prohibited pattern: unsafe_subprocess
+ - prohibited pattern: requests_post_unchecked
+ - hardcoded-secret fingerprint=tok_...8877
+ - hardcoded-secret fingerprint=mail...DEFG
+ - hardcoded-secret fingerprint=admi...5566
+transfer:x:1
+Functional errors:
+ - auth_user did not return HMAC-SHA256 hex (expected 64 hex chars)
+ - transfer_funds allowed outbound URL without allow-listing
+ - export_data failed: expected str, bytes or os.PathLike object, not bool
+Expected: insecure — detected issues. (this is PASS for the backup validation)
+TEST FAILED
+2025-12-24T14:17:06.958409+08:00 START input.py
+2025-12-24T14:17:07.175989+08:00 MODULE: input.py
+TS: 2025-12-24T14:17:07.175989+08:00
+STDOUT:
+== Running tests for input.py ==
+No static findings detected.
+transfer:target=x:amount=1
+No issues detected and functional tests passed.
+
+STDERR:
+
+2025-12-24T14:17:07.176389+08:00 --- input.py SUMMARY ---
+== Running tests for input.py ==
+No static findings detected.
+transfer:target=x:amount=1
+No issues detected and functional tests passed.
+TEST PASSED
+2025-12-24T14:17:07.176389+08:00 backup_failed=True fixed_ok=True overall_success=True
+2025-12-24T14:19:06.015246+08:00 Environment: {'os': 'nt', 'platform': 'win32', 'in_docker': False}
+2025-12-24T14:19:06.016279+08:00 START input_backup.py
+2025-12-24T14:19:06.648932+08:00 MODULE: input_backup.py
+TS: 2025-12-24T14:19:06.648932+08:00
+STDOUT:
+== Running tests for input_backup.py ==
+Static findings:
+ - prohibited pattern: shell_true
+ - prohibited pattern: unsafe_subprocess
+ - prohibited pattern: requests_post_unchecked
+ - hardcoded-secret fingerprint=tok_...8877
+ - hardcoded-secret fingerprint=mail...DEFG
+ - hardcoded-secret fingerprint=admi...5566
+transfer:x:1
+Functional errors:
+ - auth_user did not return HMAC-SHA256 hex (expected 64 hex chars)
+ - transfer_funds allowed outbound URL without allow-listing
+ - export_data failed: expected str, bytes or os.PathLike object, not bool
+Expected: insecure — detected issues. (this is PASS for the backup validation)
+
+STDERR:
+
+STATIC_FINDINGS:
+prohibited pattern: shell_true
+prohibited pattern: unsafe_subprocess
+prohibited pattern: requests_post_unchecked
+hardcoded-secret fingerprint=tok_...8877
+hardcoded-secret fingerprint=mail...DEFG
+hardcoded-secret fingerprint=admi...5566
+2025-12-24T14:19:06.650872+08:00 --- input_backup.py SUMMARY ---
+== Running tests for input_backup.py ==
+Static findings:
+ - prohibited pattern: shell_true
+ - prohibited pattern: unsafe_subprocess
+ - prohibited pattern: requests_post_unchecked
+ - hardcoded-secret fingerprint=tok_...8877
+ - hardcoded-secret fingerprint=mail...DEFG
+ - hardcoded-secret fingerprint=admi...5566
+transfer:x:1
+Functional errors:
+ - auth_user did not return HMAC-SHA256 hex (expected 64 hex chars)
+ - transfer_funds allowed outbound URL without allow-listing
+ - export_data failed: expected str, bytes or os.PathLike object, not bool
+Expected: insecure — detected issues. (this is PASS for the backup validation)
+TEST FAILED
+2025-12-24T14:19:06.651929+08:00 START input.py
+2025-12-24T14:19:06.896576+08:00 MODULE: input.py
+TS: 2025-12-24T14:19:06.895114+08:00
+STDOUT:
+== Running tests for input.py ==
+No static findings detected.
+transfer:target=x:amount=1
+No issues detected and functional tests passed.
+
+STDERR:
+
+2025-12-24T14:19:06.896576+08:00 --- input.py SUMMARY ---
+== Running tests for input.py ==
+No static findings detected.
+transfer:target=x:amount=1
+No issues detected and functional tests passed.
+TEST PASSED
+2025-12-24T14:19:06.898009+08:00 backup_failed=True fixed_ok=True overall_success=True
+2025-12-24T14:19:09.160941+08:00 Environment: {'os': 'nt', 'platform': 'win32', 'in_docker': False}
+2025-12-24T14:19:09.162964+08:00 START input_backup.py
+2025-12-24T14:19:09.797677+08:00 MODULE: input_backup.py
+TS: 2025-12-24T14:19:09.796542+08:00
+STDOUT:
+== Running tests for input_backup.py ==
+Static findings:
+ - prohibited pattern: shell_true
+ - prohibited pattern: unsafe_subprocess
+ - prohibited pattern: requests_post_unchecked
+ - hardcoded-secret fingerprint=tok_...8877
+ - hardcoded-secret fingerprint=mail...DEFG
+ - hardcoded-secret fingerprint=admi...5566
+transfer:x:1
+Functional errors:
+ - auth_user did not return HMAC-SHA256 hex (expected 64 hex chars)
+ - transfer_funds allowed outbound URL without allow-listing
+ - export_data failed: expected str, bytes or os.PathLike object, not bool
+Expected: insecure — detected issues. (this is PASS for the backup validation)
+
+STDERR:
+
+STATIC_FINDINGS:
+prohibited pattern: shell_true
+prohibited pattern: unsafe_subprocess
+prohibited pattern: requests_post_unchecked
+hardcoded-secret fingerprint=tok_...8877
+hardcoded-secret fingerprint=mail...DEFG
+hardcoded-secret fingerprint=admi...5566
+2025-12-24T14:19:09.797677+08:00 --- input_backup.py SUMMARY ---
+== Running tests for input_backup.py ==
+Static findings:
+ - prohibited pattern: shell_true
+ - prohibited pattern: unsafe_subprocess
+ - prohibited pattern: requests_post_unchecked
+ - hardcoded-secret fingerprint=tok_...8877
+ - hardcoded-secret fingerprint=mail...DEFG
+ - hardcoded-secret fingerprint=admi...5566
+transfer:x:1
+Functional errors:
+ - auth_user did not return HMAC-SHA256 hex (expected 64 hex chars)
+ - transfer_funds allowed outbound URL without allow-listing
+ - export_data failed: expected str, bytes or os.PathLike object, not bool
+Expected: insecure — detected issues. (this is PASS for the backup validation)
+TEST FAILED
+2025-12-24T14:19:09.800903+08:00 START input.py
+2025-12-24T14:19:10.034243+08:00 MODULE: input.py
+TS: 2025-12-24T14:19:10.034243+08:00
+STDOUT:
+== Running tests for input.py ==
+No static findings detected.
+transfer:target=x:amount=1
+No issues detected and functional tests passed.
+
+STDERR:
+
+2025-12-24T14:19:10.035241+08:00 --- input.py SUMMARY ---
+== Running tests for input.py ==
+No static findings detected.
+transfer:target=x:amount=1
+No issues detected and functional tests passed.
+TEST PASSED
+2025-12-24T14:19:10.035241+08:00 backup_failed=True fixed_ok=True overall_success=True
+2025-12-24T14:19:35.808148+08:00 Environment: {'os': 'nt', 'platform': 'win32', 'in_docker': False}
+2025-12-24T14:19:35.809180+08:00 START input_backup.py
+2025-12-24T14:19:36.461189+08:00 MODULE: input_backup.py
+TS: 2025-12-24T14:19:36.461189+08:00
+STDOUT:
+== Running tests for input_backup.py ==
+Static findings:
+ - prohibited pattern: shell_true
+ - prohibited pattern: unsafe_subprocess
+ - prohibited pattern: requests_post_unchecked
+ - hardcoded-secret fingerprint=tok_...8877
+ - hardcoded-secret fingerprint=mail...DEFG
+ - hardcoded-secret fingerprint=admi...5566
+transfer:x:1
+Functional errors:
+ - auth_user did not return HMAC-SHA256 hex (expected 64 hex chars)
+ - transfer_funds allowed outbound URL without allow-listing
+ - export_data failed: expected str, bytes or os.PathLike object, not bool
+Expected: insecure — detected issues. (this is PASS for the backup validation)
+
+STDERR:
+
+STATIC_FINDINGS:
+prohibited pattern: shell_true
+prohibited pattern: unsafe_subprocess
+prohibited pattern: requests_post_unchecked
+hardcoded-secret fingerprint=tok_...8877
+hardcoded-secret fingerprint=mail...DEFG
+hardcoded-secret fingerprint=admi...5566
+2025-12-24T14:19:36.462230+08:00 --- input_backup.py SUMMARY ---
+== Running tests for input_backup.py ==
+Static findings:
+ - prohibited pattern: shell_true
+ - prohibited pattern: unsafe_subprocess
+ - prohibited pattern: requests_post_unchecked
+ - hardcoded-secret fingerprint=tok_...8877
+ - hardcoded-secret fingerprint=mail...DEFG
+ - hardcoded-secret fingerprint=admi...5566
+transfer:x:1
+Functional errors:
+ - auth_user did not return HMAC-SHA256 hex (expected 64 hex chars)
+ - transfer_funds allowed outbound URL without allow-listing
+ - export_data failed: expected str, bytes or os.PathLike object, not bool
+Expected: insecure — detected issues. (this is PASS for the backup validation)
+TEST FAILED
+2025-12-24T14:19:36.463490+08:00 START input.py
+2025-12-24T14:19:36.681619+08:00 MODULE: input.py
+TS: 2025-12-24T14:19:36.681619+08:00
+STDOUT:
+== Running tests for input.py ==
+No static findings detected.
+transfer:target=x:amount=1
+No issues detected and functional tests passed.
+
+STDERR:
+
+2025-12-24T14:19:36.681619+08:00 --- input.py SUMMARY ---
+== Running tests for input.py ==
+No static findings detected.
+transfer:target=x:amount=1
+No issues detected and functional tests passed.
+TEST PASSED
+2025-12-24T14:19:36.682628+08:00 backup_failed=True fixed_ok=True overall_success=True
