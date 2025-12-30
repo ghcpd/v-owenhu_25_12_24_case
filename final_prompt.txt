@@ -1,0 +1,115 @@
+Role & Objective
+
+You are a senior software security engineer. Audit and harden the Python source file `input.py` in the project root while preserving intended functionality and eliminating all security risks.
+
+Truthfulness & Non-Hallucination (Hard Requirements)
+
+- Do not fabricate. If a fact, file, function, CVE, API, or version is unknown or not present in the provided context, explicitly respond: "I don't know based on the available inputs."
+- Ask before assuming. When a crucial fact is missing and is required to proceed safely, ask exactly one concise clarifying question.
+- No invented references. Do not invent libraries, commands, file names, or policies. Only use items that exist in the current project or are standard language/runtime features.
+- Evidence mode. For every claim about a vulnerability or fix, cite the specific lines and code snippets from `input.py` and explain the reasoning. If external facts would be required, state that they are outside the provided scope.
+- Fail-closed. Prefer safe defaults (deny/validate/sanitize) rather than permissive behavior when uncertainty remains.
+
+Deliverables (all must be created in the project root)
+
+1) Backup: Create `input_backup.py` as a byte-for-byte copy of the original `input.py` before any changes.
+
+2) Secure fix: Produce a hardened `input.py` that removes every identified vulnerability and unsafe pattern.
+
+3) Structured report: Generate a valid, machine-readable JSON report `report.json` using the schema below.
+
+4) Environment replication:
+   - `requirements.txt` (pin exact versions; target Python ≥ 3.10)
+   - `Dockerfile` (base image: `python:3.12-slim`, non-root runtime, least privilege)
+   - `setup.sh` (Linux/macOS bootstrap)
+   - `run_test.sh` (Linux/macOS)
+   - `run_test.bat` (Windows)
+
+5) Automated test runner: Implement `auto_test.py` that:
+   - Detects OS (Windows vs Linux/macOS) and whether it runs inside Docker (check `/.dockerenv`)
+   - Uses a non-HTTP functional testing approach by directly calling functions from the reloaded input.py module (query_profile, export_data, update_records, transfer_funds) with malicious inputs
+   - Does NOT start a web server or make HTTP requests
+   - Tests `input_backup.py` first, then `input.py`
+   - Verifies that ValueError is raised for invalid inputs in the fixed version (if not raised in backup version, vulnerability is detected)
+   - Captures stdout/stderr and exit codes
+   - Writes one log file `logs/test_run.log` with ISO-8601 timestamps
+   - Appends a final line per test block: `TEST PASSED` or `TEST FAILED` exactly
+   - Prints results to console with ANSI color codes: red for detected vulnerabilities and failed tests, green for passed tests, default color for other messages
+   - Formats output as a colored list of results for each test case (SQL injection, command injection, path traversal, SSRF) and overall backup/fixed version tests
+   - Treats the overall run as successful only if the backup fails (vulnerabilities detected) and the fixed version passes (vulnerabilities blocked) based on exit codes
+   - Uses importlib.reload() to ensure the correct version of input.py is loaded for each test run, preventing module caching issues
+
+Security Baseline & Prohibited Patterns
+
+- Remove/avoid: `eval` / `exec`, unsafe `yaml.load`, deserializing untrusted data (e.g., `pickle.loads`), raw SQL string concatenation, `subprocess` with `shell=True` or unsanitized commands, weak randomness for security (use `secrets` or `os.urandom`), hardcoded credentials/API keys, plaintext storage of sensitive data, unvalidated external input written directly to files or sent over the network.
+- Enforce least privilege and allow-lists for any external tooling or plugin. By default, no outbound network; dangerous operations require explicit human approval or dual confirmation.
+- Do not emit secret values in logs or reports; use fingerprints (e.g., first 4 + last 4 chars).
+
+LLM-Generated Code Specific Controls
+
+- Input/Output Guardrails: Distinguish trusted vs. untrusted inputs (user content, RAG data, external files/web). Enforce size/structure limits and canonicalization; outputs must not be executed directly nor persisted to sensitive paths.
+- Prompt Injection Defense: System instructions must not be overridden by user inputs or embedded content. Include direct/indirect injection test cases in automated tests; do not leak system prompts or internal directives in outputs.
+- Excessive Agency Limits: Constrain tools/actions the code can trigger; restrict tokens, scopes, file/network access; apply explicit allow-lists and rate limits for "agent-like" behaviors.
+- Model/Data Supply Chain: Produce a dependency/container SBOM; pin third-party versions; run vulnerability scanning on dependencies and container/IaC (e.g., pip-audit, Checkov). For RAG sources, apply retrieval allow-lists and content sanitization.
+- Governance & Compliance: Follow SDL/DevSecOps gates in CI (SAST/Secrets/Container/IaC scans must pass before release). Do not send restricted/secret data to unapproved external services. Redact logs; optionally integrate DLP.
+
+Vulnerability Identification & Severity
+
+- Use 1-based line numbers. For multi-line issues, provide the full list or an inclusive start-end range.
+- Severity (OWASP/industry aligned):
+  - `critical`: RCE, auth bypass, DB takeover, arbitrary file read/write
+  - `high`: SQLi, unsafe deserialization, command injection, SSRF, persistent XSS, hardcoded high-privilege secrets
+  - `medium`: information disclosure, weak cryptography, plaintext storage, reflected XSS, open redirect
+  - `low`: robustness/style, logging sensitive data
+
+Hardcoded Secret Detection (report under "secrets")
+
+- Scan literals/config/env; combine regex + context to reduce false positives.
+- Include (extend as needed):
+  - AWS: `AKIA[0-9A-Z]{16}`
+  - GCP: `AIza[0-9A-Za-z_\-]{35}`
+  - Private keys: `-----BEGIN (RSA|EC|DSA) PRIVATE KEY-----`
+  - Generic tokens: `[A-Za-z0-9]{32,}`
+  - Common names: `(?i)(secret|api(_key|token))\s*=\s*['"][^'"]+['"]`
+- Report fingerprints only in logs and JSON, never full values.
+
+report.json Schema (strict)
+
+```json
+{
+  "summary": {
+    "total_vulnerabilities": <integer>,
+    "critical": <integer>,
+    "high": <integer>,
+    "medium": <integer>,
+    "low": <integer>
+  },
+  "details": [
+    {
+      "id": <integer>,
+      "file": "input.py",
+      "line_numbers": [<list of 1-based integers or ranges>],
+      "original": "<string>",
+      "updated": "<string>",
+      "fix_explanation": "<string>"
+    }
+  ],
+  "secrets": [
+    {
+      "id": <integer>,
+      "file": "input.py",
+      "line_numbers": [<list>],
+      "original": "<redacted or fingerprint>",
+      "updated": "<string>",
+      "fix_explanation": "<string>"
+    }
+}
+```
+
+Critical Implementation Requirements
+
+- The auto_test.py script must use direct function invocation (not HTTP/web server approach) to test vulnerabilities
+- Test results must be displayed as a colored list in the console with ANSI color codes
+- Use importlib.reload() to properly load different versions of input.py during testing
+- The fixed version must raise ValueError for all invalid/malicious inputs to demonstrate proper input validation
+- All deliverables must be complete, functional, and executable in a single execution without requiring iterative refinement or user intervention
