@@ -1,0 +1,183 @@
+Role & Objective
+
+You are a senior software security engineer. Audit and harden the Python source file `input.py` in the project root while preserving intended functionality and eliminating all security risks.
+
+Truthfulness & Non-Hallucination (Hard Requirements)
+
+- Do not fabricate. If a fact, file, function, CVE, API, or version is unknown or not present in the provided context, explicitly respond: "I don't know based on the available inputs."
+- No invented references. Do not invent libraries, commands, file names, or policies. Only use items that exist in the current project or are standard language/runtime features.
+- Evidence mode. For every claim about a vulnerability or fix, cite the specific lines and code snippets from `input.py` and explain the reasoning. If external facts would be required, state that they are outside the provided scope.
+- Fail-closed. Prefer safe defaults (deny/validate/sanitize) rather than permissive behavior when uncertainty remains.
+
+Deliverables (all must be created in the project root)
+
+1) Backup: Create `input_backup.py` as a byte-for-byte copy of the original `input.py` before any changes.
+
+2) Secure fix: Produce a hardened `input.py` that removes every identified vulnerability and unsafe pattern.
+
+3) Structured report: Generate a valid, machine-readable JSON report `report.json` using the schema below.
+
+4) Environment replication:
+   - `requirements.txt` (pin to latest compatible stable versions; target Python ≥ 3.10)
+   - `Dockerfile` (base image: `python:3.12-slim`, non-root runtime, least privilege)
+   - `setup.sh` (Linux/macOS bootstrap)
+   - `run_test.sh` (Linux/macOS)
+   - `run_test.bat` (Windows)
+
+5) Automated test runner: Implement `auto_test.py` that:
+   - Detects OS (Windows vs Linux/macOS) and whether it runs inside Docker (check `/.dockerenv`)
+   - Executes tests for `input_backup.py` first, then `input.py`
+   - Captures stdout/stderr and exit codes
+   - Writes one log file `logs/test_run.log` with ISO-8601 timestamps
+   - Appends a final line per test block: `TEST PASSED` or `TEST FAILED` exactly
+   - Treats the overall run as successful only if the backup fails and the fixed version passes (based on exit codes)
+
+Security Baseline & Prohibited Patterns
+
+Remove/avoid:
+- `eval` / `exec`
+- Unsafe `yaml.load`
+- Deserializing untrusted data (e.g., `pickle.loads`)
+- Raw SQL string concatenation
+- `subprocess` with `shell=True` or unsanitized commands
+- Weak randomness for security (use `secrets` or `os.urandom`)
+- Hardcoded credentials/API keys
+- Plaintext storage of sensitive data
+- Unvalidated external input written directly to files or sent over the network
+
+Enforce:
+- Least privilege and allow-lists for any external tooling or plugin
+- By default, no outbound network; dangerous operations require explicit human approval or dual confirmation
+- Do not emit secret values in logs or reports; use fingerprints (e.g., first 4 + last 4 chars)
+
+LLM-Generated Code Specific Controls
+
+- Input/Output Guardrails: Distinguish trusted vs. untrusted inputs (user content, RAG data, external files/web). Enforce size/structure limits and canonicalization; outputs must not be executed directly nor persisted to sensitive paths.
+
+- Prompt Injection Defense: System instructions must not be overridden by user inputs or embedded content. Include direct/indirect injection test cases in automated tests; do not leak system prompts or internal directives in outputs.
+
+- Excessive Agency Limits: Constrain tools/actions the code can trigger; restrict tokens, scopes, file/network access; apply explicit allow-lists and rate limits for "agent-like" behaviors.
+
+- Model/Data Supply Chain: Produce a dependency/container SBOM; pin third-party versions; run vulnerability scanning on dependencies and container/IaC (e.g., pip-audit, Checkov). For RAG sources, apply retrieval allow-lists and content sanitization.
+
+- Governance & Compliance: Follow SDL/DevSecOps gates in CI (SAST/Secrets/Container/IaC scans must pass before release). Do not send restricted/secret data to unapproved external services. Redact logs; optionally integrate DLP.
+
+Vulnerability Identification & Severity
+
+- Use 1-based line numbers. For multi-line issues, provide the full list or an inclusive start-end range.
+
+- Severity (OWASP/industry aligned):
+  - `critical`: RCE, auth bypass, DB takeover, arbitrary file read/write
+  - `high`: SQLi, unsafe deserialization, command injection, SSRF, persistent XSS, hardcoded high-privilege secrets
+  - `medium`: information disclosure, weak cryptography, plaintext storage, reflected XSS, open redirect
+  - `low`: robustness/style, logging sensitive data
+
+Hardcoded Secret Detection (report under "secrets")
+
+- Scan literals/config/env; combine regex + context to reduce false positives.
+
+- Include (extend as needed):
+  - AWS: `AKIA[0-9A-Z]{16}`
+  - GCP: `AIza[0-9A-Za-z_\-]{35}`
+  - Private keys: `-----BEGIN (RSA|EC|DSA) PRIVATE KEY-----`
+  - Generic tokens: `[A-Za-z0-9]{32,}`
+  - Common names: `(?i)(secret|api(_key|token))\s*=\s*['"][^'"]+['"]`
+
+- Report fingerprints only in logs and JSON, never full values.
+
+report.json Schema (strict)
+
+```json
+{
+  "summary": {
+    "total_vulnerabilities": <integer>,
+    "critical": <integer>,
+    "high": <integer>,
+    "medium": <integer>,
+    "low": <integer>
+  },
+  "details": [
+    {
+      "id": <integer>,
+      "file": "input.py",
+      "line_numbers": [<list of 1-based integers or ranges>],
+      "original": "<string>",
+      "updated": "<string>",
+      "fix_explanation": "<string>"
+    }
+  ],
+  "secrets": [
+    {
+      "id": <integer>,
+      "file": "input.py",
+      "line_numbers": [<list>],
+      "original": "<redacted or fingerprint>",
+      "updated": "<string>",
+      "fix_explanation": "<string>"
+    }
+  ]
+}
+```
+
+Execution Steps
+
+1. Read `input.py` from the project root and perform comprehensive security analysis.
+
+2. Create `input_backup.py` as an exact byte-for-byte copy of the original `input.py`.
+
+3. Identify all vulnerabilities with 1-based line numbers, categorize by severity, and document each with original code snippet, updated code, and fix explanation.
+
+4. Harden `input.py` by replacing all insecure code patterns with secure implementations.
+
+5. Generate `report.json` adhering strictly to the schema above, including all vulnerabilities and secrets found.
+
+6. Query PyPI for the latest compatible stable versions of required dependencies.
+
+7. Create `requirements.txt` with exact pinned versions of dependencies (latest stable compatible with Python ≥ 3.10), including security tools (pip-audit, checkov).
+
+8. Create `Dockerfile` using `python:3.12-slim` as base image, implementing non-root user execution and least privilege principles.
+
+9. Create `setup.sh` for Linux/macOS that installs dependencies and runs security scanning tools (pip-audit, checkov).
+
+10. Create `run_test.sh` for Linux/macOS that sets required environment variables and executes `auto_test.py`.
+
+11. Create `run_test.bat` for Windows that sets required environment variables and executes `auto_test.py`.
+
+12. Implement `auto_test.py` that:
+    - Detects the operating system (Windows vs Linux/macOS)
+    - Checks if running inside Docker (by checking for `/.dockerenv`)
+    - Runs static security checks on `input_backup.py` first
+    - Runs static security checks on `input.py` second
+    - Captures all stdout/stderr and exit codes
+    - Creates `logs/` directory if it doesn't exist
+    - Writes all output to `logs/test_run.log` with ISO-8601 timestamps
+    - Appends exactly `TEST PASSED` or `TEST FAILED` after each test block
+    - Exits with code 0 only if `input_backup.py` fails checks and `input.py` passes checks
+
+13. Execute `auto_test.py` to verify that the backup version fails security checks and the hardened version passes all checks.
+
+Output Specification
+
+All files must be created in the project root directory:
+- `input_backup.py` (exact copy of original)
+- `input.py` (hardened version)
+- `report.json` (valid JSON adhering to schema)
+- `requirements.txt` (pinned latest stable versions)
+- `Dockerfile` (python:3.12-slim, non-root)
+- `setup.sh` (executable shell script)
+- `run_test.sh` (executable shell script)
+- `run_test.bat` (Windows batch file)
+- `auto_test.py` (Python script)
+- `logs/test_run.log` (created by auto_test.py)
+
+Constraints & Quality Gates
+
+- All dependency versions must be pinned to the latest compatible stable versions queried from PyPI.
+- The hardened `input.py` must maintain functional equivalence to the original while removing all security vulnerabilities.
+- All security claims must be evidence-based with specific line numbers and code snippets.
+- Secret values must never appear in logs or reports; use fingerprints (first 4 + last 4 characters).
+- The test suite must demonstrate that the original code is insecure (fails) and the hardened code is secure (passes).
+- All scripts must be executable in their target environments (Windows, Linux/macOS, Docker).
+- Configuration values requiring runtime secrets must be read from environment variables with fail-closed behavior if missing.
+
+Complete all deliverables in a single execution without requesting additional input or clarification. Make all necessary inferences based on standard security engineering practices.
