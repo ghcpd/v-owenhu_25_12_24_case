@@ -1,0 +1,102 @@
+2025-12-24T06:14:57.204616Z Running tests for input_backup
+2025-12-24T06:14:57.666778Z input_backup - SQL injection prevention: FAIL
+2025-12-24T06:14:57.686887Z input_backup - Export name validation: FAIL
+2025-12-24T06:14:57.891806Z input_backup - Notify URL allowlist (deny-by-default): FAIL
+2025-12-24T06:14:57.893805Z input_backup - Update records sanitization: FAIL
+2025-12-24T06:14:57.893805Z input_backup - Auth token strength (HMAC): FAIL
+2025-12-24T06:14:57.895059Z input_backup - Prompt-injection / secret leakage check: FAIL
+2025-12-24T06:14:57.895059Z TEST FAILED
+2025-12-24T06:14:57.896210Z Running tests for input
+2025-12-24T06:14:57.910703Z input - SQL injection prevention: PASS
+2025-12-24T06:14:57.913702Z input - Export name validation: PASS
+2025-12-24T06:14:57.913702Z input - Notify URL allowlist (deny-by-default): PASS
+2025-12-24T06:14:57.913702Z input - Update records sanitization: FAIL
+2025-12-24T06:14:57.913702Z input - Auth token strength (HMAC): PASS
+2025-12-24T06:14:57.913702Z input - Prompt-injection / secret leakage check: FAIL
+2025-12-24T06:14:57.914965Z TEST FAILED
+2025-12-24T06:14:57.914965Z Overall result: FAILURE
+2025-12-24T06:16:30.047366Z Running tests for input_backup
+2025-12-24T06:16:30.465767Z input_backup - SQL injection prevention: FAIL
+2025-12-24T06:16:30.482004Z input_backup - Export name validation: FAIL
+2025-12-24T06:16:30.786347Z input_backup - Notify URL allowlist (deny-by-default): FAIL
+2025-12-24T06:16:30.787348Z input_backup - Update records sanitization: FAIL
+2025-12-24T06:16:30.787348Z input_backup - Auth token strength (HMAC): FAIL
+2025-12-24T06:16:30.787348Z input_backup - Prompt-injection / secret leakage check: FAIL
+2025-12-24T06:16:30.787348Z TEST FAILED
+2025-12-24T06:16:30.788858Z Running tests for input
+2025-12-24T06:16:30.820883Z input - SQL injection prevention: PASS
+2025-12-24T06:16:30.822191Z input - Export name validation: PASS
+2025-12-24T06:16:30.822191Z input - Notify URL allowlist (deny-by-default): PASS
+2025-12-24T06:16:30.823190Z input - Update records sanitization: FAIL
+2025-12-24T06:16:30.823190Z input - Auth token strength (HMAC): PASS
+2025-12-24T06:16:30.824204Z input - Prompt-injection / secret leakage check: FAIL
+2025-12-24T06:16:30.824204Z TEST FAILED
+2025-12-24T06:16:30.824204Z Overall result: FAILURE
+2025-12-24T06:21:20.093654Z Running tests for input_backup
+2025-12-24T06:21:20.548830Z input_backup - SQL injection prevention: FAIL
+2025-12-24T06:21:20.566245Z input_backup - Export name validation: FAIL
+2025-12-24T06:21:20.762466Z input_backup - Notify URL allowlist (deny-by-default): FAIL
+2025-12-24T06:21:20.764064Z input_backup - Update records sanitization: FAIL
+2025-12-24T06:21:20.764064Z input_backup - Auth token strength (HMAC): FAIL
+2025-12-24T06:21:20.764064Z input_backup - Prompt-injection / secret leakage check: FAIL
+2025-12-24T06:21:20.765569Z TEST FAILED
+2025-12-24T06:21:20.765569Z Running tests for input
+2025-12-24T06:21:20.780476Z input - SQL injection prevention: PASS
+2025-12-24T06:21:20.781486Z input - Export name validation: PASS
+2025-12-24T06:21:20.781486Z input - Notify URL allowlist (deny-by-default): PASS
+2025-12-24T06:21:20.783484Z input - Update records sanitization: PASS
+2025-12-24T06:21:20.783484Z input - Auth token strength (HMAC): PASS
+2025-12-24T06:21:20.785484Z input - Prompt-injection / secret leakage check: PASS
+2025-12-24T06:21:20.785484Z TEST PASSED
+2025-12-24T06:21:20.785484Z Overall result: SUCCESS
+2025-12-24T06:22:34.369401Z Running tests for input_backup
+2025-12-24T06:22:34.800265Z input_backup - SQL injection prevention: FAIL
+2025-12-24T06:22:34.815706Z input_backup - Export name validation: FAIL
+2025-12-24T06:22:35.124115Z input_backup - Notify URL allowlist (deny-by-default): FAIL
+2025-12-24T06:22:35.124115Z input_backup - Update records sanitization: FAIL
+2025-12-24T06:22:35.124115Z input_backup - Auth token strength (HMAC): FAIL
+2025-12-24T06:22:35.125620Z input_backup - Prompt-injection / secret leakage check: FAIL
+2025-12-24T06:22:35.125620Z TEST FAILED
+2025-12-24T06:22:35.125620Z Running tests for input
+2025-12-24T06:22:35.140616Z input - SQL injection prevention: PASS
+2025-12-24T06:22:35.141903Z input - Export name validation: PASS
+2025-12-24T06:22:35.141903Z input - Notify URL allowlist (deny-by-default): PASS
+2025-12-24T06:22:35.146421Z input - Update records sanitization: PASS
+2025-12-24T06:22:35.146421Z input - Auth token strength (HMAC): PASS
+2025-12-24T06:22:35.148887Z input - Prompt-injection / secret leakage check: PASS
+2025-12-24T06:22:35.150011Z TEST PASSED
+2025-12-24T06:22:35.150011Z Overall result: SUCCESS
+2025-12-24T06:25:42.085875Z Running tests for input_backup
+2025-12-24T06:25:42.524469Z input_backup - SQL injection prevention: FAIL
+2025-12-24T06:25:42.540727Z input_backup - Export name validation: FAIL
+2025-12-24T06:25:42.745191Z input_backup - Notify URL allowlist (deny-by-default): FAIL
+2025-12-24T06:25:42.746190Z input_backup - Update records sanitization: FAIL
+2025-12-24T06:25:42.746190Z input_backup - Auth token strength (HMAC): FAIL
+2025-12-24T06:25:42.746190Z input_backup - Prompt-injection / secret leakage check: FAIL
+2025-12-24T06:25:42.747825Z TEST FAILED
+2025-12-24T06:25:42.747825Z Running tests for input
+2025-12-24T06:25:42.761681Z input - SQL injection prevention: PASS
+2025-12-24T06:25:42.762844Z input - Export name validation: PASS
+2025-12-24T06:25:42.762844Z input - Notify URL allowlist (deny-by-default): PASS
+2025-12-24T06:25:42.765838Z input - Update records sanitization: PASS
+2025-12-24T06:25:42.765838Z input - Auth token strength (HMAC): PASS
+2025-12-24T06:25:42.767844Z input - Prompt-injection / secret leakage check: PASS
+2025-12-24T06:25:42.768285Z TEST PASSED
+2025-12-24T06:25:42.768285Z Overall result: SUCCESS
+2025-12-24T06:26:02.499637Z Running tests for input_backup
+2025-12-24T06:26:02.963169Z input_backup - SQL injection prevention: FAIL
+2025-12-24T06:26:02.980338Z input_backup - Export name validation: FAIL
+2025-12-24T06:26:03.184325Z input_backup - Notify URL allowlist (deny-by-default): FAIL
+2025-12-24T06:26:03.185845Z input_backup - Update records sanitization: FAIL
+2025-12-24T06:26:03.185845Z input_backup - Auth token strength (HMAC): FAIL
+2025-12-24T06:26:03.186854Z input_backup - Prompt-injection / secret leakage check: FAIL
+2025-12-24T06:26:03.189856Z TEST FAILED
+2025-12-24T06:26:03.189856Z Running tests for input
+2025-12-24T06:26:03.201407Z input - SQL injection prevention: PASS
+2025-12-24T06:26:03.202527Z input - Export name validation: PASS
+2025-12-24T06:26:03.202527Z input - Notify URL allowlist (deny-by-default): PASS
+2025-12-24T06:26:03.205999Z input - Update records sanitization: PASS
+2025-12-24T06:26:03.205999Z input - Auth token strength (HMAC): PASS
+2025-12-24T06:26:03.208689Z input - Prompt-injection / secret leakage check: PASS
+2025-12-24T06:26:03.210789Z TEST PASSED
+2025-12-24T06:26:03.211967Z Overall result: SUCCESS
